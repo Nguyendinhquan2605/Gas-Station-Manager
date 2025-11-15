@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+      <div class="logo">⛽ Tìm Kiếm Cây Xăng</div>
+      <div id="filters">
+        <label><input type="checkbox" id="nearby" /> Gần Bạn (<2km) </label>
+        <div id="cacloaixang">
+          <label>Loại xăng</label>
+          <select id="loaixang">
+            <option value="">Tất cả</option>
+            <option value="xang92">Xăng RON 92</option>
+            <option value="xang95">Xăng RON 95</option>
+            <option value="daudiesel">Dầu diesel</option>
+            <option value="dauhoa">Dầu hỏa</option>
+          </select>
+        </div>
+        <div id="cacdichvu">
+          <label>Dịch vụ</label>
+          <select id="dichvu">
+            <option value="">Tất cả</option>
+            <option value="tramsacxedien">Trạm sạc xe điện</option>
+            <option value="ruaxe">Rửa xe</option>
+            <option value="nhavesinh">Nhà vệ sinh</option>
+          </select>
+        </div>
+        <div id="cacthuonghieu">
+          <label>Thương hiệu</label>
+          <select id="thuonghieu">
+            <option value="">Tất cả</option>
+            <option value="tunhan">Cây xăng tư nhân</option>
+            <option value="mipec">Cây xăng quân đội MIPEC</option>
+            <option value="petrolimex">Cây xăng nhà nước Petrolimex</option>
+            <option value="pvoil">Cây xăng nhà nước PVOIL</option>
+          </select>
+        </div>
+      </div>
+      <button id="filter-btn"><strong>Tìm kiếm</strong></button>
+    </header>
+    <h1>bản đồ</h1>
+    <div id="map" style="height: 600px"></div>
+  </body>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/script.js"></script>
+</html>
