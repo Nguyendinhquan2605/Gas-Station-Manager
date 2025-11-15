@@ -1,0 +1,136 @@
+<% layout('admin/layouts/default') %>
+
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">⛽ Thêm mới cây xăng</h1>
+  </div>
+
+  <div class="form-container">
+    <div id="successMessage" class="success-message">
+      ✓ Thêm cây xăng thành công!
+    </div>
+
+    <form id="gasStationForm" method="post" action="/stations/create-station">
+      <!-- Tên cây xăng -->
+      <div class="form-group">
+        <label for="name">Tên cây xăng <span class="required">*</span></label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="VD: Cây xăng Petrolimex Hà Nội"
+          required
+        />
+      </div>
+
+      <!-- Lat & Lng -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lat">Latitude <span class="required">*</span></label>
+          <input
+            type="number"
+            id="lat"
+            name="lat"
+            step="any"
+            placeholder="21.0285"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="lng">Longitude <span class="required">*</span></label>
+          <input
+            type="number"
+            id="lng"
+            name="lng"
+            step="any"
+            placeholder="105.8542"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Địa chỉ -->
+      <div class="form-group">
+        <label for="address">Địa chỉ <span class="required">*</span></label>
+        <textarea
+          id="address"
+          name="address"
+          placeholder="VD: 123 Phố Huế, Hai Bà Trưng, Hà Nội"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Phone -->
+      <div class="form-group">
+        <label for="phone">Số điện thoại <span class="required">*</span></label>
+        <input
+          type="text"
+          id="phone"
+          name="phone"
+          placeholder="0123456789"
+          required
+        />
+      </div>
+
+      <!-- Giờ mở cửa -->
+      <div class="form-group">
+        <label for="openingHours"
+          >Giờ mở cửa <span class="required">*</span></label
+        >
+        <input
+          type="text"
+          id="hours"
+          name="hours"
+          placeholder="VD: 06:00 - 22:00 hoặc 24/7"
+          required
+        />
+      </div>
+
+      <!-- Thương hiệu -->
+      <div class="form-group">
+        <label for="brand">Thương hiệu <span class="required">*</span></label>
+        <select id="brand" name="brand_id" required>
+          <option value="" disabled selected>---Chọn thương hiệu---</option>
+          <% brands.forEach(brand => { %>
+          <option value="<%= brand.id %>"><%= brand.name %></option>
+          <% } ) %>
+        </select>
+      </div>
+
+      <!-- Services -->
+      <div class="form-group">
+        <label for="services">Dịch vụ</label>
+        <input
+          type="text"
+          id="services"
+          name="services"
+          placeholder="VD: Rửa xe, Cửa hàng tiện lợi, ATM"
+        />
+      </div>
+
+      <!-- Loại nhiên liệu -->
+      <div class="form-group">
+        <label>Loại nhiên liệu <span class="required">*</span></label>
+        <div class="checkbox-group">
+          <% fuelTypes.forEach(ft => { %>
+          <div class="checkbox-item">
+            <input
+              type="checkbox"
+              id="<%= ft.id %>"
+              name="fuel_id[]"
+              value="<%= ft.id %>"
+            />
+            <label for="<%= ft.id %>"><%= ft.fuel_name %></label>
+          </div>
+          <% } ) %>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button type="submit" class="btn-submit">Thêm Cây Xăng</button>
+        <button type="reset" class="btn-reset">Làm Mới</button>
+      </div>
+    </form>
+  </div>
+</div>
