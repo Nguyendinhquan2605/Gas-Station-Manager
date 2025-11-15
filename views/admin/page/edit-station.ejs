@@ -2,7 +2,7 @@
 
 <div class="page-container">
   <div class="page-header">
-    <h1 class="page-title">⛽ Thêm mới cây xăng</h1>
+    <h1 class="page-title">⛽ Chỉnh sửa cây xăng</h1>
   </div>
 
   <div class="form-container">
@@ -18,6 +18,7 @@
           type="text"
           id="name"
           name="name"
+          value="<%= station.name %>"
           placeholder="VD: Cây xăng Petrolimex Hà Nội"
           required
         />
@@ -32,6 +33,7 @@
             id="lat"
             name="lat"
             step="any"
+            value="<%= station.lat %>"
             placeholder="21.0285"
             required
           />
@@ -43,6 +45,7 @@
             id="lng"
             name="lng"
             step="any"
+            value="<%= station.lng %>"
             placeholder="105.8542"
             required
           />
@@ -57,7 +60,7 @@
           name="address"
           placeholder="VD: 123 Phố Huế, Hai Bà Trưng, Hà Nội"
           required
-        ></textarea>
+        ><%= station.address %></textarea>
       </div>
 
       <!-- Phone -->
@@ -67,6 +70,7 @@
           type="text"
           id="phone"
           name="phone"
+          value="<%= station.phone %>"
           placeholder="0123456789"
           required
         />
@@ -81,6 +85,7 @@
           type="text"
           id="hours"
           name="hours"
+          value="<%= station.hours %>"
           placeholder="VD: 06:00 - 22:00 hoặc 24/7"
           required
         />
@@ -92,7 +97,7 @@
         <select id="brand" name="brand_id" required>
           <option value="" disabled selected>---Chọn thương hiệu---</option>
           <% brands.forEach(brand => { %>
-          <option value="<%= brand.id %>"><%= brand.name %></option>
+          <option value="<%= brand.id %>" <%= brand.id === station.brand_id ? "selected" : "" %> ><%= brand.name %></option>
           <% } ) %>
         </select>
       </div>
@@ -104,32 +109,32 @@
           type="text"
           id="services"
           name="services"
+          value="<%= station.services %>"
           placeholder="VD: Rửa xe, Cửa hàng tiện lợi, ATM"
         />
       </div>
 
       <!-- Loại nhiên liệu -->
-      <div class="form-group">
-        <label>Loại nhiên liệu <span class="required">*</span></label>
-        <div class="checkbox-group">
-          <% fuelTypes.forEach(ft => { %>
-          <div class="checkbox-item">
-            <input
-              type="checkbox"
-              id="<%= ft.id %>"
-              name="fuel_id[]"
-              value="<%= ft.id %>"
-            />
-            <label for="<%= ft.id %>"><%= ft.fuel_name %></label>
-          </div>
-          <% } ) %>
-        </div>
+      <% fuelTypes.forEach(ft => { %>
+      <div class="checkbox-item">
+        <input
+            type="checkbox"
+            id="fuel-<%= ft.id %>"
+            name="fuel_id[]"
+            value="<%= ft.id %>"
+
+            <% if (selectedFuelIds.includes(ft.id)) { %>
+            checked
+            <% } %>
+        />
+        <label for="fuel-<%= ft.id %>"><%= ft.fuel_name %></label>
       </div>
+      <% }) %>
 
       <!-- Buttons -->
       <div class="button-group">
-        <button type="submit" class="btn-submit">Thêm Cây Xăng</button>
-        <button type="reset" class="btn-reset">Làm Mới</button>
+        <button type="submit" class="btn-submit">Chỉnh sửa</button>
+        <button type="reset" class="btn-reset"><a style="text-decoration: none; color: white;" href="/admin/Alls-stations">Quay lại</a></button>
       </div>
     </form>
   </div>
