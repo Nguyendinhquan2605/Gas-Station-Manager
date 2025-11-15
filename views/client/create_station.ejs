@@ -272,7 +272,7 @@
             >Số điện thoại <span class="required">*</span></label
           >
           <input
-            type="tel"
+            type="text"
             id="phone"
             name="phone"
             placeholder="0123456789"
@@ -287,8 +287,8 @@
           >
           <input
             type="text"
-            id="openingHours"
-            name="openingHours"
+            id="hours"
+            name="hours"
             placeholder="VD: 06:00 - 22:00 hoặc 24/7"
             required
           />
@@ -297,7 +297,8 @@
         <!-- Thương hiệu -->
         <div class="form-group">
           <label for="brand">Thương hiệu <span class="required">*</span></label>
-          <select id="brand" name="brand" required>
+          <select id="brand" name="brand_id" required>
+            <option value="" disabled selected>---Chọn thương hiệu---</option>
             <% brands.forEach(brand => { %>
             <option value="<%= brand.id %>"><%= brand.name %></option>
             <% } ) %>
@@ -324,9 +325,10 @@
               <input
                 type="checkbox"
                 id="<%= ft.id %>"
-                name="<%= ft.fuel_name %>"
+                name="fuel_id[]"
+                value="<%= ft.id %>"
               />
-              <label for="diesel"><%= ft.fuel_name %></label>
+              <label for="<%= ft.id %>"><%= ft.fuel_name %></label>
             </div>
             <% } ) %>
           </div>
