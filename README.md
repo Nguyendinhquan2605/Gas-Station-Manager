@@ -1,4 +1,4 @@
-# QUẢN LÝ CÂY XĂNT
+# QUẢN LÝ CÂY XĂNG
 
 **Giới thiệu**
 *   Một đoạn văn ngắn gọn giới thiệu về mục đích và chức năng của dự án này [2]. Ví dụ: "Đây là một ứng dụng web Express.js đơn giản để quản lý cây xăng."
