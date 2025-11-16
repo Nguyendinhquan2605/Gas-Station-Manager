@@ -34,3 +34,34 @@ async function submitForm(event) {
   }
   alert("Cập nhật thành công!");
 }
+
+//Delete station
+const buttonsDelete = document.querySelectorAll("[button-delete]");
+if (buttonsDelete.length > 0) {
+  buttonsDelete.forEach((button) => {
+    button.addEventListener("click", async () => {
+      const isConfirm = confirm("Bạn có chắc chắn muốn xóa cây xăng này!");
+
+      if (isConfirm) {
+        const id = button.getAttribute("button-id");
+        try {
+          const response = await fetch(`/admin/stations/delete/${id}`, {
+            method: "DELETE",
+          });
+
+          const result = await response.json();
+          const code = result.code;
+          if (code == 200) {
+            alert("Xóa cây xăng thành công!");
+            window.location.href = "/admin/Alls-stations";
+          } else {
+            alert("Lỗi!");
+          }
+        } catch (error) {
+          console.log(error);
+          alert("Không thể xóa cây xăng!");
+        }
+      }
+    });
+  });
+}

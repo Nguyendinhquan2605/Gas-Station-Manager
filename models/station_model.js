@@ -41,6 +41,16 @@ const Station = sequelize.define(
     services: {
       type: DataTypes.TEXT,
     },
+
+    deleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     tableName: "stations",

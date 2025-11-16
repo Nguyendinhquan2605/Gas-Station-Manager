@@ -52,6 +52,9 @@ router.post("/create-station", async (req, res) => {
 // [GET] /admin/Alls-stations
 router.get("/Alls-stations", async (req, res) => {
   const stations = await Station.findAll({
+    where: {
+      deleted: false,
+    },
     include: [
       {
         model: FuelType,
@@ -72,7 +75,7 @@ router.get("/Alls-stations", async (req, res) => {
   });
 });
 
-//[GET] /admin/stations/edit/:id
+// [GET] /admin/stations/edit/:id
 router.get("/stations/edit/:id", async (req, res) => {
   const stationId = req.params.id;
 
@@ -108,7 +111,7 @@ router.get("/stations/edit/:id", async (req, res) => {
   });
 });
 
-//[PATCH] /admin/stations/edit/:id
+// [PATCH] /admin/stations/edit/:id
 router.patch("/stations/edit/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -145,6 +148,32 @@ router.patch("/stations/edit/:id", async (req, res) => {
   res
     .status(200)
     .json({ success: true, code: 200, redirect: `/admin/stations/edit/${id}` });
+});
+
+// [DELETE] /admin/stations/delete/:id
+router.delete("/stations/delete/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    await Station.update(
+      { deleted: true, deletedAt: new Date() },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    res.status(200).json({
+      code: 200,
+      message: "Xóa cây xăng thành công!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: "Lỗi Server!",
+    });
+  }
 });
 
 export default router;
