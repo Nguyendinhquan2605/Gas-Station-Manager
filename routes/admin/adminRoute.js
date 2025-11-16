@@ -25,15 +25,23 @@ router.post("/create-station", async (req, res) => {
     ? req.body.fuel_id.map((id) => parseInt(id))
     : [parseInt(req.body.fuel_id)];
 
+  const lat = parseFloat(req.body.lat);
+  const lng = parseFloat(req.body.lng);
+
   const data = {
     name: req.body.name,
-    lat: parseFloat(req.body.lat),
-    lng: parseFloat(req.body.lng),
+    lat,
+    lng,
     address: req.body.address,
     phone: req.body.phone,
     hours: req.body.hours,
     services: req.body.services,
     brand_id: parseInt(req.body.brand_id),
+
+    geom: {
+      type: "Point",
+      coordinates: [lng, lat],
+    },
   };
 
   const station = await Station.create(data);
@@ -46,7 +54,7 @@ router.post("/create-station", async (req, res) => {
     }))
   );
 
-  res.redirect("/stations");
+  res.redirect("/admin/Alls-stations");
 });
 
 // [GET] /admin/Alls-stations

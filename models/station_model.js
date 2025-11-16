@@ -42,6 +42,10 @@ const Station = sequelize.define(
       type: DataTypes.TEXT,
     },
 
+    geom: {
+      type: DataTypes.GEOMETRY("POINT", 4236),
+    },
+
     deleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
