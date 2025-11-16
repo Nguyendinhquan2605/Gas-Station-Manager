@@ -1,11 +1,11 @@
-# Tên Dự Án Của Bạn
+# QUẢN LÝ CÂY XĂNT
 
 **Giới thiệu**
-*   Một đoạn văn ngắn gọn giới thiệu về mục đích và chức năng của dự án này [2]. Ví dụ: "Đây là một ứng dụng web Express.js đơn giản để quản lý danh sách công việc."
+*   Một đoạn văn ngắn gọn giới thiệu về mục đích và chức năng của dự án này [2]. Ví dụ: "Đây là một ứng dụng web Express.js đơn giản để quản lý cây xăng."
 
 **Cài đặt**
 *   **Yêu cầu:**
-    *   Node.js (phiên bản $x.x.x$ trở lên)
+    *   Node.js (phiên bản 20.11.1 )
     *   npm hoặc Yarn
 *   **Các bước cài đặt:**
     1.  Clone repository vào ổ D:
