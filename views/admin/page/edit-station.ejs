@@ -10,7 +10,7 @@
       ✓ Thêm cây xăng thành công!
     </div>
 
-    <form id="gasStationForm" method="post" action="/admin/create-station">
+    <form id="gasStationForm"  action="/admin/eidt/<%= station.id %>" data-id="<%= station.id %>" onsubmit="submitForm(event)">
       <!-- Tên cây xăng -->
       <div class="form-group">
         <label for="name">Tên cây xăng <span class="required">*</span></label>
@@ -115,7 +115,10 @@
       </div>
 
       <!-- Loại nhiên liệu -->
-      <% fuelTypes.forEach(ft => { %>
+      <div class="form-group">
+        <label>Loại nhiên liệu <span class="required">*</span></label>
+        <div class="checkbox-group">
+          <% fuelTypes.forEach(ft => { %>
       <div class="checkbox-item">
         <input
             type="checkbox"
@@ -130,6 +133,8 @@
         <label for="fuel-<%= ft.id %>"><%= ft.fuel_name %></label>
       </div>
       <% }) %>
+        </div>
+      </div>
 
       <!-- Buttons -->
       <div class="button-group">

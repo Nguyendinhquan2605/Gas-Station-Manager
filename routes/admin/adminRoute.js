@@ -108,4 +108,43 @@ router.get("/stations/edit/:id", async (req, res) => {
   });
 });
 
+//[PATCH] /admin/stations/edit/:id
+router.patch("/stations/edit/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const fuelIds = Array.isArray(req.body.fuel_id)
+    ? req.body.fuel_id.map((id) => parseInt(id))
+    : [parseInt(req.body.fuel_id)];
+
+  const data = {
+    name: req.body.name,
+    lat: parseFloat(req.body.lat),
+    lng: parseFloat(req.body.lng),
+    address: req.body.address,
+    phone: req.body.phone,
+    hours: req.body.hours,
+    services: req.body.services,
+    brand_id: parseInt(req.body.brand_id),
+  };
+
+  await Station.update(data, {
+    where: {
+      id: id,
+    },
+  });
+
+  await StationFuel.destroy({ where: { station_id: id } });
+
+  await StationFuel.bulkCreate(
+    fuelIds.map((fid) => ({
+      station_id: id,
+      fuel_id: fid,
+    }))
+  );
+
+  res
+    .status(200)
+    .json({ success: true, code: 200, redirect: `/admin/stations/edit/${id}` });
+});
+
 export default router;
