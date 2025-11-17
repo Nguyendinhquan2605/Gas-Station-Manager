@@ -6,6 +6,10 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors",
 }).addTo(map);
 
+let userLat = null;
+let userLng = null;
+let routingControl = null;
+
 // Hàm load dữ liệu từ API
 async function loadStations() {
   try {
@@ -22,11 +26,19 @@ async function loadStations() {
 
         marker.bindPopup(`
                 <b>${st.name}</b><br>
-                Địa chỉ: ${st.address || "Không có địa chỉ"}<br>
-                <b>Loại xăng dầu:</b> ${fuelNames} <br>
-                <b>Thương hiệu:</b> ${st.brand.name || "N/A"}<br>
-                <b>Giờ mở cửa:</b> ${st.hours || "Chưa rõ"}<br>
-                <b>Dịch vụ:</b> ${st.services || "Chưa rõ"}
+        ${st.address}<br>
+        📞 ${st.phone}<br>
+        ⏰ Giờ hoạt động: ${st.hours}<br>
+        ⛽️ Loại xăng: ${fuelNames || ""}<br>
+        🚗 Dịch vụ: ${st.services || ""}<br>
+        ⛽ Thương hiệu: ${st.brand || ""}<br>
+
+                <button class="route-button" onclick="getRoute(${st.lat}, ${
+          st.lng
+        })">
+         📍 Chỉ đường
+                </button>
+
               `);
 
         marker.bindTooltip(st.name, {
@@ -51,32 +63,45 @@ function locateUser() {
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
 
-      console.log("User position:", lat, lng);
+      console.log("Vị trí user:", userLat, userLng);
 
-      // Zoom đến vị trí người dùng
-      map.setView([lat, lng], 15);
+      map.setView([userLat, userLng], 15);
 
-      // Thêm marker màu đỏ cho vị trí hiện tại
-      const userMarker = L.circleMarker([lat, lng], {
+      L.circleMarker([userLat, userLng], {
         radius: 10,
         color: "#FF4444",
         fillColor: "#FF0000",
         fillOpacity: 0.7,
-        weight: 3,
-      }).addTo(map);
-
-      userMarker.bindPopup("📍 Vị trí của bạn").openPopup();
+      })
+        .addTo(map)
+        .bindPopup("📍 Vị trí của bạn")
+        .openPopup();
     },
     (err) => {
-      console.error(err);
-      alert(
-        "Không thể lấy vị trí của bạn! Hãy bật GPS hoặc cấp quyền truy cập."
-      );
+      alert("Không thể lấy vị trí của bạn!");
     }
   );
+}
+
+// 6. Hàm vẽ tuyến đường
+// =======================
+function getRoute(destLat, destLng) {
+  if (!userLat || !userLng) {
+    alert("Không có vị trí của bạn — hãy bật GPS!");
+    return;
+  }
+
+  if (routingControl) map.removeControl(routingControl);
+
+  routingControl = L.Routing.control({
+    waypoints: [L.latLng(userLat, userLng), L.latLng(destLat, destLng)],
+    lineOptions: { weight: 6, addWaypoints: false },
+    draggableWaypoints: false,
+    createMarker: () => null,
+  }).addTo(map);
 }
 
 loadStations(); // Gọi hàm khi load trang
