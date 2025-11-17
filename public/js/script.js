@@ -42,4 +42,42 @@ async function loadStations() {
   }
 }
 
+// Lấy vị trí hiện tại của người dùng
+function locateUser() {
+  if (!navigator.geolocation) {
+    alert("Trình duyệt không hỗ trợ định vị GPS!");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      console.log("User position:", lat, lng);
+
+      // Zoom đến vị trí người dùng
+      map.setView([lat, lng], 15);
+
+      // Thêm marker màu đỏ cho vị trí hiện tại
+      const userMarker = L.circleMarker([lat, lng], {
+        radius: 10,
+        color: "#FF4444",
+        fillColor: "#FF0000",
+        fillOpacity: 0.7,
+        weight: 3,
+      }).addTo(map);
+
+      userMarker.bindPopup("📍 Vị trí của bạn").openPopup();
+    },
+    (err) => {
+      console.error(err);
+      alert(
+        "Không thể lấy vị trí của bạn! Hãy bật GPS hoặc cấp quyền truy cập."
+      );
+    }
+  );
+}
+
 loadStations(); // Gọi hàm khi load trang
+locateUser();
