@@ -26,17 +26,21 @@ async function loadStations() {
 
         marker.bindPopup(`
                 <b>${st.name}</b><br>
-        ${st.address}<br>
-        📞 ${st.phone}<br>
-        ⏰ Giờ hoạt động: ${st.hours}<br>
-        ⛽️ Loại xăng: ${fuelNames || ""}<br>
-        🚗 Dịch vụ: ${st.services || ""}<br>
-        ⛽ Thương hiệu: ${st.brand || ""}<br>
+                ${st.address}<br>
+                📞 ${st.phone}<br>
+                ⏰ Giờ hoạt động: ${st.hours}<br>
+                ⛽️ Loại xăng: ${fuelNames || ""}<br>
+                🚗 Dịch vụ: ${st.services || ""}<br>
+                ⛽ Thương hiệu: ${st.brand.name || ""}<br>
 
                 <button class="route-button" onclick="getRoute(${st.lat}, ${
           st.lng
         })">
-         📍 Chỉ đường
+              📍 Chỉ đường
+                </button>
+
+                <button class="btn-clear-route" onclick="stopRoute()" style="display:none;">
+                  Tắt chỉ đường
                 </button>
 
               `);
@@ -89,6 +93,9 @@ function locateUser() {
 // 6. Hàm vẽ tuyến đường
 // =======================
 function getRoute(destLat, destLng) {
+  // Đóng popup ngay khi ấn nút chỉ đường
+  map.closePopup();
+
   if (!userLat || !userLng) {
     alert("Không có vị trí của bạn — hãy bật GPS!");
     return;
@@ -98,10 +105,53 @@ function getRoute(destLat, destLng) {
 
   routingControl = L.Routing.control({
     waypoints: [L.latLng(userLat, userLng), L.latLng(destLat, destLng)],
-    lineOptions: { weight: 6, addWaypoints: false },
+    lineOptions: { weight: 8, addWaypoints: false },
     draggableWaypoints: false,
     createMarker: () => null,
   }).addTo(map);
+
+  //  LẤY QUÃNG ĐƯỜNG Ở ĐÂY
+  routingControl.on("routesfound", function (e) {
+    const summary = e.routes[0].summary;
+
+    const distanceKm = (summary.totalDistance / 1000).toFixed(2);
+    // const timeMin = Math.round(summary.totalTime / 60);
+
+    // 1. Lấy toàn bộ điểm của tuyến đường
+    const points = e.routes[0].coordinates;
+
+    // 2. Lấy điểm giữa (midpoint)
+    const midIndex = Math.floor(points.length / 2);
+    const midPoint = points[midIndex];
+
+    // Nếu marker của thông tin đã tồn tại thì xóa
+    if (window.routeInfoMarker) {
+      map.removeLayer(window.routeInfoMarker);
+    }
+
+    // 3. Tạo marker trong suốt để hiện tooltip
+    window.routeInfoMarker = L.marker([midPoint.lat, midPoint.lng], {
+      opacity: 0, // ẩn icon marker
+    }).addTo(map);
+
+    // 4. Gắn tooltip luôn hiển thị
+    window.routeInfoMarker
+      .bindTooltip(`📏 ${distanceKm} km<br>`, {
+        permanent: true,
+        direction: "top",
+        offset: [0, -10],
+        className: "route-info-tooltip",
+      })
+      .openTooltip();
+  });
+}
+
+function clearRoute() {
+  if (routingControl) {
+    map.removeControl(routingControl);
+    routingControl = null;
+  }
+  map.closePopup();
 }
 
 loadStations(); // Gọi hàm khi load trang
