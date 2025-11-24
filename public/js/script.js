@@ -11,46 +11,86 @@ let userLng = null;
 let routingControl = null;
 
 // Hàm load dữ liệu từ API
+// Hàm load dữ liệu từ API và hiển thị marker + danh sách
 async function loadStations() {
   try {
-    const res = await fetch("/stations/station-data"); // Gọi API backend
-    const stations = await res.json(); // Parse JSON
+    const res = await fetch("/stations/station-data");
+    const stations = await res.json();
 
-    // Hiển thị marker
     stations.forEach((st) => {
       if (st.lat && st.lng) {
         const marker = L.marker([st.lat, st.lng]).addTo(map);
 
-        // Lấy danh sách nhiên liệu
+        // Danh sách nhiên liệu
         const fuelNames = st.FuelTypes.map((f) => f.fuel_name).join(", ");
 
+        // Gắn popup cho marker
         marker.bindPopup(`
-                <b>${st.name}</b><br>
-                ${st.address}<br>
-                📞 ${st.phone}<br>
-                ⏰ Giờ hoạt động: ${st.hours}<br>
-                ⛽️ Loại xăng: ${fuelNames || ""}<br>
-                🚗 Dịch vụ: ${st.services || ""}<br>
-                ⛽ Thương hiệu: ${st.brand.name || ""}<br>
+          <b>${st.name}</b><br>
+          ${st.address}<br>
+          📞 ${st.phone}<br>
+          ⏰ Giờ hoạt động: ${st.hours}<br>
+          ⛽ Loại xăng: ${fuelNames || ""}<br>
+          🚗 Dịch vụ: ${st.services || ""}<br>
+          🏪 Thương hiệu: ${st.brand.name || ""}<br>
 
-                <button class="route-button" onclick="getRoute(${st.lat}, ${
-          st.lng
-        })">
-              📍 Chỉ đường
-                </button>
+          <button class="route-button"
+            data-lat="${st.lat}"
+            data-lng="${st.lng}">
+            📍 Chỉ đường
+          </button>
+        `);
 
-                <button class="btn-clear-route" onclick="stopRoute()" style="display:none;">
-                  Tắt chỉ đường
-                </button>
-
-              `);
-
+        // Tooltip tên cây xăng
         marker.bindTooltip(st.name, {
-          permanent: true, // luôn hiển thị, không cần hover
-          direction: "top", // vị trí hiển thị phía trên marker
+          permanent: true,
+          direction: "top",
           offset: [0, -10],
           className: "station-label",
         });
+
+        // GẮN SỰ KIỆN popupopen TẠI ĐÂY
+        marker.on("popupopen", function () {
+          const btn = document.querySelector(".route-button");
+          if (!btn) return;
+
+          const lat = parseFloat(btn.getAttribute("data-lat"));
+          const lng = parseFloat(btn.getAttribute("data-lng"));
+
+          btn.addEventListener("click", () => {
+            getRoute(lat, lng);
+          });
+        });
+
+        // ====== THÊM VÀO ĐỂ RENDER STATION LIST ======
+        const listContainer = document.getElementById("station-list");
+
+        const stationItem = document.createElement("div");
+        stationItem.classList.add("station-item");
+
+        stationItem.innerHTML = `
+           <h3>${st.name}</h3>
+           <p><b>Địa chỉ:</b> ${st.address}</p>
+           <p><b>⛽Nhiên liệu:</b> ${fuelNames}</p>
+           <p><b>🚗Dịch vụ:</b> ${st.services || "Không rõ"}</p>
+           <p><b>🏪Thương hiệu:</b> ${st.brand.name}</p>
+         
+           <button class="view-map-btn"
+             data-lat="${st.lat}"
+             data-lng="${st.lng}">
+             📍 Xem trên bản đồ
+           </button>
+        `;
+
+        listContainer.appendChild(stationItem);
+
+        // ========== SỰ KIỆN XEM TRÊN BẢN ĐỒ ==========
+        stationItem
+          .querySelector(".view-map-btn")
+          .addEventListener("click", () => {
+            map.setView([st.lat, st.lng], 17);
+            marker.openPopup();
+          });
       }
     });
   } catch (err) {
