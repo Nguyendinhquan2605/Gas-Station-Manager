@@ -10,12 +10,29 @@ const router = express.Router();
 // [GET] /stations/station-data
 router.get("/station-data", async (req, res) => {
   try {
+    const { fuel_id, brand_id } = req.query;
+
+    let where = {};
+
+    if (brand_id) {
+      where.brand_id = brand_id; // Lọc theo thương hiệu
+    }
+
+    let fuelFilter = {};
+    if (fuel_id) {
+      fuelFilter = {
+        where: { id: fuel_id }, // Lọc Fuel theo ID
+      };
+    }
+
     const results = await Station.findAll({
+      where,
       include: [
         {
           model: FuelType,
           through: { attributes: [] }, // Không trả về station_fuel
           attributes: ["fuel_name"],
+          ...fuelFilter,
         },
         {
           model: Brand,
@@ -33,7 +50,14 @@ router.get("/station-data", async (req, res) => {
 
 // [GET] /stations
 router.get("/", async (req, res) => {
-  res.render("client/station.ejs");
+  const brands = await Brand.findAll();
+  const fuelTypes = await FuelType.findAll();
+
+  res.render("client/station.ejs", {
+    pageTitle: "Trang chủ",
+    brands: brands,
+    fuelTypes: fuelTypes,
+  });
 });
 
 export default router;

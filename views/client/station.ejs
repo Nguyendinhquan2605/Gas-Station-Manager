@@ -13,7 +13,7 @@
       href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"
     />
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-    <title>Document</title>
+    <title><%= pageTitle %></title>
     <style>
       * {
         margin: 0;
@@ -154,6 +154,19 @@
         font-weight: bold;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
+      .clear-route-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        background: #ff4444;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
@@ -162,13 +175,12 @@
       <div id="filters">
         <label><input type="checkbox" id="nearby" /> Gần Bạn (<2km) </label>
         <div id="cacloaixang">
-          <label>Loại xăng</label>
-          <select id="loaixang">
+          <label>Loại nhiên liệu</label>
+          <select id="loaixang" name="brand_id">
             <option value="">Tất cả</option>
-            <option value="xang92">Xăng RON 92</option>
-            <option value="xang95">Xăng RON 95</option>
-            <option value="daudiesel">Dầu diesel</option>
-            <option value="dauhoa">Dầu hỏa</option>
+            <% fuelTypes.forEach(fuel => { %>
+            <option value="<%= fuel.id %>"><%= fuel.fuel_name %></option>
+            <% } ) %>
           </select>
         </div>
         <div id="cacdichvu">
@@ -184,10 +196,9 @@
           <label>Thương hiệu</label>
           <select id="thuonghieu">
             <option value="">Tất cả</option>
-            <option value="tunhan">Cây xăng tư nhân</option>
-            <option value="mipec">Cây xăng quân đội MIPEC</option>
-            <option value="petrolimex">Cây xăng nhà nước Petrolimex</option>
-            <option value="pvoil">Cây xăng nhà nước PVOIL</option>
+            <% brands.forEach(brand => { %>
+            <option value="<%= brand.id %>"><%= brand.name %></option>
+            <% } ) %>
           </select>
         </div>
         <button id="filter-btn"><strong>Tìm kiếm</strong></button>
@@ -195,6 +206,14 @@
     </header>
 
     <div class="container">
+      <button
+        id="clear-route-btn"
+        class="clear-route-btn"
+        style="display: none"
+      >
+        ❌ Tắt chỉ đường
+      </button>
+
       <div id="map"></div>
       <div id="list-container">
         <div id="station-list"></div>
