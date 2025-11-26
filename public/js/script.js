@@ -5,8 +5,8 @@ const map = L.map("map").setView([21.0285, 105.8542], 12);
 
 let stationMarkers = [];
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap contributors",
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
+  attribution: "&copy; CARTO",
 }).addTo(map);
 
 let userLat = null;
@@ -119,15 +119,13 @@ function locateUser() {
       userLat = pos.coords.latitude;
       userLng = pos.coords.longitude;
 
-      console.log("Độ chính xác:", pos.coords.accuracy, "m");
-
       map.setView([userLat, userLng], 15);
 
       L.circleMarker([userLat, userLng], {
-        radius: 10,
+        radius: 8,
         color: "#FF4444",
         fillColor: "#FF0000",
-        fillOpacity: 0.7,
+        fillOpacity: 0.5,
       })
         .addTo(map)
         .bindPopup("📍 Vị trí của bạn")
