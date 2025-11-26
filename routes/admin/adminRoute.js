@@ -6,6 +6,7 @@ import User from "../../models/user_model.js";
 import "../../models/index.model.js";
 import StationFuel from "../../models/station_fuel.model.js";
 import { generateAccessToken } from "../../helpers/generate.js";
+import { requireAuth } from "../../middlewares/auth_middleware.js";
 
 const router = express.Router();
 
@@ -58,8 +59,14 @@ router.post("/auth/login", async (req, res) => {
   }
 });
 
+//[GET] /admin/auth/logout
+router.get("/auth/logout", async (req, res) => {
+  res.clearCookie("accessToken");
+  res.redirect("/admin/auth/login");
+});
+
 // [GET] /admin/create-station
-router.get("/create-station", async (req, res) => {
+router.get("/create-station", requireAuth, async (req, res) => {
   const brands = await Brand.findAll();
   const fuelTypes = await FuelType.findAll();
 
@@ -71,7 +78,7 @@ router.get("/create-station", async (req, res) => {
 });
 
 // [POST] /admin/create-station
-router.post("/create-station", async (req, res) => {
+router.post("/create-station", requireAuth, async (req, res) => {
   const fuelIds = Array.isArray(req.body.fuel_id)
     ? req.body.fuel_id.map((id) => parseInt(id))
     : [parseInt(req.body.fuel_id)];
@@ -109,7 +116,7 @@ router.post("/create-station", async (req, res) => {
 });
 
 // [GET] /admin/Alls-stations
-router.get("/Alls-stations", async (req, res) => {
+router.get("/Alls-stations", requireAuth, async (req, res) => {
   const stations = await Station.findAll({
     where: {
       deleted: false,
@@ -135,7 +142,7 @@ router.get("/Alls-stations", async (req, res) => {
 });
 
 // [GET] /admin/stations/edit/:id
-router.get("/stations/edit/:id", async (req, res) => {
+router.get("/stations/edit/:id", requireAuth, async (req, res) => {
   const stationId = req.params.id;
 
   const station = await Station.findOne({
@@ -171,7 +178,7 @@ router.get("/stations/edit/:id", async (req, res) => {
 });
 
 // [PATCH] /admin/stations/edit/:id
-router.patch("/stations/edit/:id", async (req, res) => {
+router.patch("/stations/edit/:id", requireAuth, async (req, res) => {
   const id = req.params.id;
 
   const fuelIds = Array.isArray(req.body.fuel_id)
@@ -210,7 +217,7 @@ router.patch("/stations/edit/:id", async (req, res) => {
 });
 
 // [DELETE] /admin/stations/delete/:id
-router.delete("/stations/delete/:id", async (req, res) => {
+router.delete("/stations/delete/:id", requireAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
 
