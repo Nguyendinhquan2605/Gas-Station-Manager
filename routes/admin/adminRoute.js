@@ -2,10 +2,61 @@ import express from "express";
 import Station from "../../models/station_model.js";
 import FuelType from "../../models/fuel_type.model.js";
 import Brand from "../../models/brand_model.js";
+import User from "../../models/user_model.js";
 import "../../models/index.model.js";
 import StationFuel from "../../models/station_fuel.model.js";
+import { generateAccessToken } from "../../helpers/generate.js";
 
 const router = express.Router();
+
+// [GET] /admin/auth/login
+router.get("/auth/login", async (req, res) => {
+  res.render("admin/page/login.ejs", {
+    pageTitle: "Trang đăng nhập",
+  });
+});
+
+//[POST] /admin/auth/loginPost
+router.post("/auth/login", async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+      raw: true,
+    });
+
+    if (!user) {
+      res.status(400).json({
+        message: "Email không chính xác!",
+      });
+      return;
+    }
+
+    if (password != user.password) {
+      res.status(400).json({
+        message: "Sai mật khẩu!",
+      });
+      return;
+    }
+    const accessToken = generateAccessToken(user);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000 * 24 * 7,
+    });
+
+    res.redirect("/admin/Alls-stations");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Lỗi Server",
+    });
+  }
+});
 
 // [GET] /admin/create-station
 router.get("/create-station", async (req, res) => {

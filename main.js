@@ -3,6 +3,7 @@ import ejsMate from "ejs-mate";
 import bodyParser from "body-parser";
 import stationsRoute from "./routes/client/indexRoute.js";
 import adminRoute from "./routes/admin/adminRoute.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const port = 3000;
@@ -10,6 +11,9 @@ const port = 3000;
 // Middleware đọc form-urlencoded
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+
+//cookieParser
+app.use(cookieParser());
 
 //Template
 app.set("views", "./views");
