@@ -110,13 +110,16 @@ function clearMarkers() {
 // ==============================
 function locateUser() {
   if (!navigator.geolocation) {
-    return alert("Trình duyệt không hỗ trợ GPS!");
+    alert("Trình duyệt không hỗ trợ GPS!");
+    return;
   }
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       userLat = pos.coords.latitude;
       userLng = pos.coords.longitude;
+
+      console.log("Độ chính xác:", pos.coords.accuracy, "m");
 
       map.setView([userLat, userLng], 15);
 
@@ -130,8 +133,14 @@ function locateUser() {
         .bindPopup("📍 Vị trí của bạn")
         .openPopup();
     },
-    () => {
-      alert("Không thể lấy vị trí của bạn!");
+    (err) => {
+      console.error(err);
+      alert("Không thể lấy vị trí!");
+    },
+    {
+      enableHighAccuracy: true, // yêu cầu GPS chính xác cao
+      timeout: 10000, // tối đa 10s
+      maximumAge: 0, // không dùng vị trí cũ
     }
   );
 }
