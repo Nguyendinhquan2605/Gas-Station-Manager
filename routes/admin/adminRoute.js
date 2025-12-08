@@ -10,6 +10,8 @@ import { requireAuth } from "../../middlewares/auth_middleware.js";
 
 const router = express.Router();
 
+// ------------ LOGIN && LOG OUT ---------------
+
 // [GET] /admin/auth/login
 router.get("/auth/login", async (req, res) => {
   res.render("admin/page/login.ejs", {
@@ -64,6 +66,8 @@ router.get("/auth/logout", async (req, res) => {
   res.clearCookie("accessToken");
   res.redirect("/admin/auth/login");
 });
+
+// ---------------- STATIONS ----------------
 
 // [GET] /admin/create-station
 router.get("/create-station", requireAuth, async (req, res) => {
@@ -233,6 +237,196 @@ router.delete("/stations/delete/:id", requireAuth, async (req, res) => {
     res.status(200).json({
       code: 200,
       message: "Xóa cây xăng thành công!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: "Lỗi Server!",
+    });
+  }
+});
+
+// ---------------- BRANDS -------------------
+
+// [GET] /admin/brands
+router.get("/brands", requireAuth, async (req, res) => {
+  const brands = await Brand.findAll({
+    where: {
+      deleted: false,
+    },
+  });
+
+  res.render("admin/page/brand.ejs", {
+    pageTitle: "Danh sách thương hiệu",
+    brands: brands,
+  });
+});
+
+// [GET] /admin/brands/create-brand
+router.get("/brands/create-brand", requireAuth, async (req, res) => {
+  res.render("admin/page/create-brand.ejs", {
+    pageTitle: "Thêm mới thương hiệu",
+  });
+});
+
+// [POST] /admin/brands/create-brand
+router.post("/brands/create-brand", requireAuth, async (req, res) => {
+  const name = req.body.name;
+
+  await Brand.create({ name: name });
+
+  res.redirect("/admin/brands");
+});
+
+// [GET] /admin/brands/edit/:id
+router.get("/brands/edit/:id", requireAuth, async (req, res) => {
+  const id = req.params.id;
+
+  const brand = await Brand.findOne({
+    where: {
+      id: id,
+    },
+    raw: true,
+  });
+
+  res.render("admin/page/edit_brand.ejs", {
+    pageTitle: "Chỉnh sửa nhiên liệu",
+    brand: brand,
+  });
+});
+
+// [PATCH] /admin/brands/edit/:id
+router.patch("/brands/edit/:id", requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  await Brand.update(
+    { name: req.body.name },
+    {
+      where: {
+        id: id,
+      },
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    code: 200,
+    redirect: `/admin/brands/edit/${id}`,
+  });
+});
+
+// [DELETE] /admin/brands/delete/:id
+router.delete("/brands/delete/:id", requireAuth, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    await Brand.update(
+      { deleted: true, deletedAt: new Date() },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    res.status(200).json({
+      code: 200,
+      message: "Xóa thương hiệu thành công!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: "Lỗi Server!",
+    });
+  }
+});
+
+// -------------- FuelTypes --------------------
+
+// [GET] /admin/fuel_types
+router.get("/fuel_types", requireAuth, async (req, res) => {
+  const fuel_types = await FuelType.findAll({
+    where: {
+      deleted: false,
+    },
+  });
+
+  res.render("admin/page/fuel_type.ejs", {
+    pageTitle: "Danh sách nhiên liệu",
+    fuel_types: fuel_types,
+  });
+});
+
+// [GET] /admin/fuel_types/create-fuel
+router.get("/fuel_types/create-fuel", requireAuth, async (req, res) => {
+  res.render("admin/page/create-fuel.ejs", {
+    pageTitle: "Thêm mới nhiên liệu",
+  });
+});
+
+// [POST] /admin/fuel_types/create-brand
+router.post("/fuel_types/create-fuel", requireAuth, async (req, res) => {
+  const fuel_name = req.body.fuel_name;
+
+  await FuelType.create({ fuel_name: fuel_name });
+
+  res.redirect("/admin/fuel_types");
+});
+
+// [GET] /admin/fuel_types/edit/:id
+router.get("/fuel_types/edit/:id", requireAuth, async (req, res) => {
+  const id = req.params.id;
+
+  const fuel_type = await FuelType.findOne({
+    where: {
+      id: id,
+    },
+    raw: true,
+  });
+
+  res.render("admin/page/edit_fuel.ejs", {
+    pageTitle: "Chỉnh sửa nhiên liệu",
+    fuel_type: fuel_type,
+  });
+});
+
+// [PATCH] /admin/fuel_types/edit/:id
+router.patch("/fuel_types/edit/:id", requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  await FuelType.update(
+    { fuel_name: req.body.name },
+    {
+      where: {
+        id: id,
+      },
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    code: 200,
+    redirect: `/admin/fuel_types/edit/${id}`,
+  });
+});
+
+// [DELETE] /admin/fuel_types/delete/:id
+router.delete("/fuel_types/delete/:id", requireAuth, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    await FuelType.update(
+      { deleted: true, deletedAt: new Date() },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    res.status(200).json({
+      code: 200,
+      message: "Xóa nhiên liệu thành công!",
     });
   } catch (error) {
     res.status(500).json({

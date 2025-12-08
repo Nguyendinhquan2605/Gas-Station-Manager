@@ -1,0 +1,33 @@
+<% layout('admin/layouts/default') %>
+
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">⛽ Thêm mới Nhiên liệu</h1>
+  </div>
+
+  <div class="form-container">
+    <div id="successMessage" class="success-message">
+      ✓ Thêm nhiên liệu thành công!
+    </div>
+
+    <form id="brandForm" method="post" action="/admin/fuel_types/create-fuel">
+      <!-- Tên nhiên liệu -->
+      <div class="form-group">
+        <label for="name">Tên cây xăng <span class="required">*</span></label>
+        <input
+          type="text"
+          id="name"
+          name="fuel_name"
+          placeholder="VD: Dầu diesel"
+          required
+        />
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button type="submit" class="btn-submit">Thêm nhiên liệu</button>
+        <button type="reset" class="btn-reset">Làm Mới</button>
+      </div>
+    </form>
+  </div>
+</div>
