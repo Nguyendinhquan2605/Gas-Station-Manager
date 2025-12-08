@@ -3,14 +3,13 @@ import Station from "../../models/station_model.js";
 import FuelType from "../../models/fuel_type.model.js";
 import Brand from "../../models/brand_model.js";
 import "../../models/index.model.js";
-import StationFuel from "../../models/station_fuel.model.js";
 
 const router = express.Router();
 
 // [GET] /stations/station-data
 router.get("/station-data", async (req, res) => {
   try {
-    const { fuel_id, brand_id } = req.query;
+    const { fuel_id, brand_id, nearby, lat, lng } = req.query;
 
     let where = {};
 
@@ -25,7 +24,7 @@ router.get("/station-data", async (req, res) => {
       };
     }
 
-    const results = await Station.findAll({
+    let results = await Station.findAll({
       where,
       include: [
         {
@@ -41,6 +40,36 @@ router.get("/station-data", async (req, res) => {
         },
       ],
     });
+
+    // ====== 4. Lọc gần bạn (< 2km) ======
+    if (nearby && lat && lng) {
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+
+      results = results.filter((st) => {
+        if (!st.lat || !st.lng) return false;
+
+        const stationLat = parseFloat(st.lat);
+        const stationLng = parseFloat(st.lng);
+        if (isNaN(stationLat) || isNaN(stationLng)) return false;
+
+        const R = 6371; // km
+        const dLat = ((stationLat - userLat) * Math.PI) / 180;
+        const dLng = ((stationLng - userLng) * Math.PI) / 180;
+
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos((userLat * Math.PI) / 180) *
+            Math.cos((stationLat * Math.PI) / 180) *
+            Math.sin(dLng / 2) ** 2;
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+
+        return distance <= 4; // < 4km
+      });
+    }
+
     res.json(results);
   } catch (err) {
     console.error(err);
