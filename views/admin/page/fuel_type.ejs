@@ -2,8 +2,8 @@
 
 <div class="page-container">
   <div class="page-header">
-    <h1 class="page-title">⛽ Danh sách cây xăng</h1>
-    <a href="/admin/create-station" class="btn-add">+ Thêm mới</a>
+    <h1 class="page-title">⛽ Danh sách Nhiên liệu</h1>
+    <a href="/admin/fuel_types/create-fuel" class="btn-add">+ Thêm mới</a>
   </div>
 
   <div class="table-container">
@@ -11,28 +11,24 @@
       <thead>
         <tr>
           <th>STT</th>
-          <th>Tên cây xăng</th>
-          <th>Phone</th>
-          <th>Thương hiệu</th>
+          <th>Tên Nhiên liệu</th>
           <th>Hành động</th>
         </tr>
       </thead>
       <tbody>
-        <% stations.forEach((station,index) => { %>
+        <% fuel_types.forEach((fuel,index) => { %>
         <tr>
           <td><%= index + 1 %></td>
-          <td><%= station.name %></td>
-          <td><%= station.phone %></td>
-          <td><%= station.brand.name %></td>
+          <td><%= fuel.fuel_name %></td>
           <td>
             <div class="action-buttons">
-              <a href="/admin/stations/edit/<%= station.id %>" class="btn-edit"
+              <a href="/admin/fuel_types/edit/<%= fuel.id %>" class="btn-edit"
                 >Sửa</a
               >
               <button
                 class="btn-delete"
-                button-delete
-                button-id="<%= station.id %>"
+                button-delete-fuel
+                button-id="<%= fuel.id %>"
               >
                 Xóa
               </button>

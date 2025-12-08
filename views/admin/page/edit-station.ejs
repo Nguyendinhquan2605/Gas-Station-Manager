@@ -10,7 +10,12 @@
       ✓ Thêm cây xăng thành công!
     </div>
 
-    <form id="gasStationForm"  action="/admin/eidt/<%= station.id %>" data-id="<%= station.id %>" onsubmit="submitForm(event)">
+    <form
+      id="gasStationForm"
+      data-action="/admin/stations/edit/<%= station.id %>"
+      data-id="<%= station.id %>"
+    >
+
       <!-- Tên cây xăng -->
       <div class="form-group">
         <label for="name">Tên cây xăng <span class="required">*</span></label>
