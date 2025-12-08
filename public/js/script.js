@@ -213,14 +213,12 @@ function clearRoute() {
 document.getElementById("filter-btn").onclick = () => {
   const fuel_id = document.getElementById("loaixang").value;
   const brand_id = document.getElementById("thuonghieu").value;
-  const service = document.getElementById("dichvu").value;
   const nearby = document.getElementById("nearby").checked;
 
   const params = new URLSearchParams();
 
   if (fuel_id) params.append("fuel_id", fuel_id);
   if (brand_id) params.append("brand_id", brand_id);
-  if (service) params.append("service", service);
 
   if (nearby) {
     if (!userLat || !userLng) {
